@@ -25,5 +25,7 @@ jobs:
         key: npm-${{ hashFiles('**/package-lock.json') }}
     - name: Install dependecies
       run: npm install
-    - name: Lint 
-      run: npm run test 
+    - name: Test 
+      run: npm run test
+    - name: Coverage/Codecov
+      run: npm run test:codecov
