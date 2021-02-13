@@ -1,0 +1,38 @@
+{
+  "name": "meta-png",
+  "version": "1.0.0",
+  "description": "Write and read metadata in PNG files.",
+  "main": "dist/meta-png.umd.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "test": "jest",
+    "lint": "eslint src/*",
+    "build": "rollup --config"
+  },
+  "keywords": [
+    "metadata",
+    "png"
+  ],
+  "author": {
+    "name": "Luca Chiodini",
+    "email": "luca.chiodini@usi.ch"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.12.13",
+    "@babel/preset-env": "^7.12.13",
+    "@rollup/plugin-commonjs": "^17.1.0",
+    "@rollup/plugin-node-resolve": "^11.1.1",
+    "babel-jest": "^26.6.3",
+    "eslint": "^7.19.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "exifr": "^6.0.0",
+    "jest": "^26.6.3",
+    "lodash": "^4.17.20",
+    "rollup": "^2.39.0",
+    "rollup-plugin-terser": "^7.0.2"
+  }
+}
