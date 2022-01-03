@@ -1,11 +1,10 @@
 # meta-png
-[![dependencies Status](https://status.david-dm.org/gh/lucach/meta-png.svg)](https://david-dm.org/lucach/meta-png)
 [![NPM version](https://badge.fury.io/js/meta-png.svg)](https://badge.fury.io/js/meta-png.svg)
 [![codecov](https://codecov.io/gh/lucach/meta-png/branch/main/graph/badge.svg?token=ZGEFAO5WDP)](https://codecov.io/gh/lucach/meta-png)
 ![Test](https://github.com/lucach/meta-png/workflows/Test/badge.svg)
 ![Lint](https://github.com/lucach/meta-png/workflows/Lint/badge.svg)
 
-A simple JavaScript library with zero dependencies to store and retrieve metadata in PNG files.
+Simple, zero-dependencies NodeJS/JavaScript library to store and retrieve metadata in PNG files.
 
 ## Installation
 Use your favourite package manager 
