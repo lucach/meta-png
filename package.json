@@ -1,6 +1,6 @@
 {
   "name": "meta-png",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Write and read metadata in PNG files.",
   "main": "dist/meta-png.umd.js",
   "files": [
@@ -23,6 +23,7 @@
     "email": "luca.chiodini@usi.ch"
   },
   "license": "ISC",
+  "types": "./types/index.d.ts",
   "devDependencies": {
     "@babel/core": "^7.12.13",
     "@babel/preset-env": "^7.12.13",
