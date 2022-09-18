@@ -4,8 +4,10 @@
   "description": "Write and read metadata in PNG files.",
   "main": "dist/meta-png.umd.js",
   "files": [
-    "dist"
+    "dist",
+    "types/main.d.ts"
   ],
+  "repository": "https://github.com/lucach/meta-png.git",
   "scripts": {
     "test": "jest",
     "test:coverage": "npm run test -- --ci --coverage",
