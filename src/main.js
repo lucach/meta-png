@@ -62,9 +62,18 @@ function concatArrays(arrays) {
  * @returns {boolean} - true if array has a valid PNG header, false otherwise.
 */
 function isPNG(array) {
-  const referenceView = new DataView(new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10]).buffer);
-  const arrayBufferView = new DataView(array.buffer, 0, 8);
-  return referenceView.getBigUint64() === arrayBufferView.getBigUint64();
+  const pngSignature = new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10]);
+  if (array.length < pngSignature.length) {
+    return false;
+  }
+  // We need to be very careful here, because the are subtle incompatibilities
+  // between JavaScript TypedArrays and Node.js Buffers.
+  // We access elements of the array passed as a parameter (which could be a
+  // Buffer, that is supposed to be a subclass of TypedArray) using the [...]
+  // operator, so that even when `array` is using only a portion of the
+  // underlying ArrayBuffer (e.g., for optimization purposes with small arrays),
+  // we still access the right values.
+  return pngSignature.every((value, index) => value === array[index]);
 }
 
 /**

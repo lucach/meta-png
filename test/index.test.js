@@ -28,6 +28,11 @@ test('Rejects to write on invalid PNG', () => {
   expect(() => addMetadata(arrayBuffer, 'foo', 'bar')).toThrow('Invalid PNG');
 });
 
+test('Rejects without crashing a small invalid PNG', () => {
+  const arrayBuffer = new Uint8Array([0]);
+  expect(() => addMetadata(arrayBuffer, 'foo', 'bar')).toThrow('Invalid PNG');
+});
+
 test('Rejects to write on invalid Data URI', () => {
   const dataURI = fs.readFileSync('./test/sampleGIFDataURI.txt', 'utf-8');
   expect(() => addMetadataFromBase64DataURI(dataURI, 'foo', 'bar')).toThrow('Invalid PNG as Base64 Data URI');
