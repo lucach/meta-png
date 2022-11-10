@@ -1,3 +1,5 @@
+const isPNG = require('is-png');
+
 /**
  * Packs a number into a 4 bytes Uint8Array, treating it as uint32.
  *
@@ -53,18 +55,6 @@ function concatArrays(arrays) {
     lenSoFar += arrays[i].byteLength;
   }
   return finalArray;
-}
-
-/**
- * Checks whether a given array has a valid PNG header.
- *
- * @param {Uint8Array} array - The array to check.
- * @returns {boolean} - true if array has a valid PNG header, false otherwise.
-*/
-function isPNG(array) {
-  const referenceView = new DataView(new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10]).buffer);
-  const arrayBufferView = new DataView(array.buffer, 0, 8);
-  return referenceView.getBigUint64() === arrayBufferView.getBigUint64();
 }
 
 /**
