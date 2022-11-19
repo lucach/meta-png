@@ -56,6 +56,22 @@ function concatArrays(arrays) {
 }
 
 /**
+ * Returns a dataview on the entire the TypedArray/Buffer.
+ * We need to be very careful here, because the are subtle incompatibilities
+ * between JavaScript TypedArrays and Node.js Buffers.
+ * A Buffer might not start from a zero offset on the underlying ArrayBuffer.
+ * Using byteOffset, even when `array` is using only a portion of the
+ * underlying ArrayBuffer (e.g., for optimization purposes with small arrays),
+ * we still get a view on the right values.
+ * See https://nodejs.org/api/buffer.html#bufbyteoffset
+ * @param {Uint8Array} array - The array to get a DataView on.
+ * @returns {DataView} - A DataView on the array.
+ */
+function getDataView(array) {
+  return new DataView(array.buffer, array.byteOffset, array.byteLength);
+}
+
+/**
  * Checks whether a given array has a valid PNG header.
  *
  * @param {Uint8Array} array - The array to check.
@@ -66,14 +82,7 @@ function isPNG(array) {
   if (array.length < pngSignature.length) {
     return false;
   }
-  // We need to be very careful here, because the are subtle incompatibilities
-  // between JavaScript TypedArrays and Node.js Buffers.
-  // We access elements of the array passed as a parameter (which could be a
-  // Buffer, that is supposed to be a subclass of TypedArray) using the [...]
-  // operator, so that even when `array` is using only a portion of the
-  // underlying ArrayBuffer (e.g., for optimization purposes with small arrays),
-  // we still access the right values.
-  return pngSignature.every((value, index) => value === array[index]);
+  return getDataView(pngSignature).getBigUint64() === getDataView(array).getBigUint64();
 }
 
 /**
@@ -102,7 +111,8 @@ export function addMetadata(PNGUint8Array, key, value) {
   const chunk = concatArrays([chunkDataLen, chunkType, chunkData, chunkCRC]);
 
   // Compute header (IHDR) length
-  const headerDataLen = new DataView(PNGUint8Array.buffer, 8, 4).getUint32();
+  const headerDataLenOffset = 8;
+  const headerDataLen = getDataView(PNGUint8Array).getUint32(headerDataLenOffset);
   const headerLen = 8 + 4 + 4 + headerDataLen + 4;
 
   // Assemble new PNG
@@ -132,7 +142,7 @@ export function addMetadataFromBase64DataURI(dataURI, key, value) {
     PNGUint8Array[i] = dataStr.charCodeAt(i);
   }
   const newPNGUint8Array = addMetadata(PNGUint8Array, key, value);
-  return prefix + btoa(dataViewToString(new DataView(newPNGUint8Array.buffer)));
+  return prefix + btoa(dataViewToString(getDataView(newPNGUint8Array)));
 }
 
 /**
@@ -149,7 +159,7 @@ export function getMetadata(PNGUint8Array, key) {
     throw new TypeError('Invalid PNG');
   }
 
-  const view = new DataView(PNGUint8Array.buffer);
+  const view = getDataView(PNGUint8Array);
   let offset = 8;
   while (offset < view.byteLength) {
     const chunkLength = view.getUint32(offset);
