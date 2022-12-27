@@ -86,6 +86,43 @@ function isPNG(array) {
 }
 
 /**
+ * Computes the CRC32 of a given array.
+ * Source: https://github.com/image-js/fast-png/blob/bdb81f93cc55aa89b312b50e5e2e8a39cdbde657/src/common.ts
+ *
+ * @param {Uint8Array} data - The array to compute the CRC32 of.
+ * @returns {number} - The CRC32 of the array.
+*/
+
+const crcTable = [];
+function crc(data) {
+  /* eslint-disable no-plusplus */
+  /* eslint-disable no-bitwise */
+  // Pre-compute CRC table
+  if (crcTable.length === 0) {
+    for (let n = 0; n < 256; n++) {
+      let c = n;
+      for (let k = 0; k < 8; k++) {
+        if (c & 1) {
+          c = 0xedb88320 ^ (c >>> 1);
+        } else {
+          c >>>= 1;
+        }
+      }
+      crcTable[n] = c;
+    }
+  }
+  const initialCrc = 0xffffffff;
+  const updateCrc = (currentCrc, d, length) => {
+    let c = currentCrc;
+    for (let n = 0; n < length; n++) {
+      c = crcTable[(c ^ d[n]) & 0xff] ^ (c >>> 8);
+    }
+    return c;
+  };
+  return (updateCrc(initialCrc, data, data.byteLength) ^ initialCrc) >>> 0;
+}
+
+/**
  * Adds in a tEXt chunk of a PNG file a metadata with the given key and value.
  * Warning: this function does not check whether the supplied key already exists.
  *
@@ -106,7 +143,7 @@ export function addMetadata(PNGUint8Array, key, value) {
   // Prepare tEXt chunk to insert
   const chunkType = encodeString('tEXt');
   const chunkData = encodeString(`${key}\0${value}`);
-  const chunkCRC = packNumberAs4Bytes(0); // dummy CRC
+  const chunkCRC = packNumberAs4Bytes(crc(concatArrays([chunkType, chunkData])));
   const chunkDataLen = packNumberAs4Bytes(chunkData.byteLength);
   const chunk = concatArrays([chunkDataLen, chunkType, chunkData, chunkCRC]);
 
